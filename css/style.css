@@ -1,0 +1,156 @@
+:root {
+    --verde: #355c4a;
+    --amarillo: #d39b34;
+    --rojo: #b9362b;
+    --cafe: #6b5b4b;
+    --crema: #f5e8d0;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    line-height: 1.6;
+    background-color: var(--crema);
+    color: var(--cafe);
+}
+
+header {
+    padding: 35px 20px;
+    text-align: center;
+}
+
+header h1 {
+    font-size: 2rem;
+    margin-bottom: 5px;
+}
+
+header p {
+    font-size: 1.05rem;
+    opacity: 0.95;
+}
+
+.barra-menu {
+    background-color: var(--amarillo);
+    border-bottom: 2px solid var(--rojo);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 6px #888;
+}
+
+.menu-enlaces {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    padding: 12px 0;
+    flex-wrap: wrap;
+}
+
+.enlace {
+    margin: 0 15px;
+}
+
+.enlace a {
+    text-decoration: none;
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.enlace a:hover {
+    color: var(--rojo);
+}
+
+.contenedor{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 0 30px;
+}
+
+.superior{
+    margin: 0 20px 20px;
+    padding: 20px;
+    border: 3px solid var(--verde);
+}
+
+.superior h1, h2, h3{
+    text-align: center;
+}
+
+.superior p{
+    text-align: justify;
+    margin: 15px 0;
+}
+
+.contenedor-secundario{
+    display: flex;
+    flex-wrap: wrap;
+
+}
+
+h1{
+    width: auto;
+    background-color: var(--verde);
+    color: white;
+    padding: 0 20px;
+}
+
+.modulo{
+    width: 450px;
+    background-color: var(--cafe);
+    color: white;
+    border: 1px solid var(--rojo);
+    border-radius: 30px;
+    padding: 20px;
+    margin: 20px 20px 0 20px;
+}
+
+.modulo article{
+    text-align: justify;
+    margin: 10px;
+}
+
+.num-modulo{
+    padding: 0 10px;
+    display: flex;
+    align-content: space-around;
+    align-items: center;
+}
+
+.num{
+    background-color: var(--verde);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+}
+
+.numero{
+    font-size: 30px;
+}
+
+.name-modulo{
+    margin-left: 15px;
+    text-align: left;
+}
+
+footer {
+    background-color: var(--verde);
+    color: white;
+    text-align: center;
+    padding: 25px 10px;
+    margin-top: 40px;
+}
+
+footer p {
+    margin-bottom: 4px;
+    font-size: 0.95rem;
+    opacity: 0.85;
+}
