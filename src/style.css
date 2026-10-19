@@ -1,0 +1,295 @@
+:root {
+    --azul-oscuro: #1F2937;
+    --azul-vibrante: #072B8E;
+    --azul-cian: #0891B2;
+    --verde-teal: #0D9488;
+    --fondo-claro: #F8FAFC;
+    --tarjeta-blanca: #FFFFFF;
+    --texto-oscuro: #0F172A;
+    --texto-suave: #475569;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    line-height: 1.6;
+    background-color: var(--fondo-claro);
+    color: var(--texto-oscuro);
+    overflow-x: hidden;
+}
+
+header {
+    padding: 30px 15px;
+    text-align: center;
+    background-color: var(--tarjeta-blanca);
+    border-bottom: 1px solid #E2E8F0;
+}
+
+header h2 {
+    font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+    color: var(--azul-vibrante);
+}
+
+/* BARRA DE NAVEGACIÓN */
+.barra-menu {
+    background-color: var(--azul-oscuro);
+    border-bottom: 3px solid var(--azul-cian);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.menu-enlaces {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    list-style: none;
+    padding: 12px 15px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.enlace a {
+    text-decoration: none;
+    color: #F1F5F9;
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 6px 14px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.enlace a:hover {
+    background-color: var(--azul-cian);
+    color: white;
+}
+
+/* CONTENEDOR PRINCIPAL */
+.contenedor {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    padding: 25px 15px;
+}
+
+/* SECCIONES SUPERIORES (Sobre mí & Competencia) */
+.superior {
+    margin: 0 0 25px 0;
+    padding: 25px;
+    border: 2px solid var(--azul-cian);
+    border-radius: 16px;
+    background-color: var(--tarjeta-blanca);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+}
+
+.superior h1, .superior h2, .superior h3 {
+    text-align: center;
+    color: var(--tarjeta-blanca);
+    margin-bottom: 10px;
+}
+
+.superior p {
+    text-align: justify;
+    margin: 12px 0;
+    color: var(--texto-suave);
+}
+
+#sobre-mi h3{
+    color: var(--texto-oscuro);
+}
+
+.caja-info p {
+    margin-bottom: 12px;
+    padding-left: 12px;
+    border-left: 4px solid var(--verde-teal);
+    color: var(--texto-oscuro);
+}
+
+/* TÍTULO SECCIÓN MÓDULOS */
+h1 {
+    width: 100%;
+    background-color: var(--azul-oscuro);
+    color: white;
+    padding: 14px 20px;
+    border-radius: 12px;
+    font-size: 1.6rem;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* CONTENEDOR MÓDULOS */
+.contenedor-secundario {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: stretch;
+    gap: 20px;
+    padding: 10px 0;
+}
+
+/* TARJETAS DE MÓDULO */
+.modulo {
+    flex: 1 1 320px;
+    max-width: 480px;
+    background-color: var(--azul-oscuro);
+    color: white;
+    border: 2px solid var(--azul-vibrante);
+    border-radius: 24px;
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.12);
+    transition: all 0.3s ease;
+}
+
+.modulo-bloqueado {
+    opacity: 0.55;
+    filter: grayscale(0.8);
+    border-color: #64748B;
+}
+
+.modulo-completado {
+    border-color: var(--verde-teal);
+    box-shadow: 0 0 18px rgba(13, 148, 136, 0.4);
+}
+
+.bloque-titulo-modulo {
+    display: flex;
+    flex-direction: column;
+}
+
+.insignia-bloqueo {
+    font-size: 0.8rem;
+    color: #94A3B8;
+    margin-top: 4px;
+    font-weight: 600;
+}
+
+.modulo article {
+    text-align: justify;
+    margin: 15px 5px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: #E2E8F0;
+}
+
+.num-modulo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.num {
+    background-color: var(--azul-cian);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 12px;
+    min-width: 75px;
+}
+
+.num p {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.numero {
+    font-size: 1.8rem;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.name-modulo {
+    font-size: 1.1rem;
+    text-align: left;
+    color: #F8FAFC;
+}
+
+/* DESPLIEGUE INTERACTIVO DE ACTIVIDADES */
+.contenedor-despliegue {
+    margin-top: 15px;
+}
+
+.boton-desplegar {
+    width: 100%;
+    padding: 10px;
+    background-color: var(--azul-cian);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.boton-desplegar:hover {
+    background-color: #0e7490;
+}
+
+.lista-actividades-desplegable {
+    margin-top: 10px;
+    background-color: rgba(15, 23, 42, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.item-actividad {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background-color: rgba(255, 255, 255, 0.08);
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: background-color 0.2s ease;
+}
+
+.item-actividad:hover {
+    background-color: rgba(255, 255, 255, 0.18);
+}
+
+.item-actividad.actividad-hecha {
+    background-color: rgba(13, 148, 136, 0.4);
+    text-decoration: line-through;
+    opacity: 0.9;
+}
+
+.item-actividad input {
+    margin-top: 3px;
+    cursor: pointer;
+    accent-color: var(--verde-teal);
+}
+
+/* FOOTER */
+footer {
+    background-color: var(--azul-oscuro);
+    color: #94A3B8;
+    text-align: center;
+    padding: 25px 15px;
+    margin-top: 40px;
+    border-top: 3px solid var(--azul-vibrante);
+}
+
+footer p {
+    margin-bottom: 4px;
+    font-size: 0.95rem;
+}
