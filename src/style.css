@@ -130,15 +130,16 @@ h1 {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    align-items: stretch;
+    align-items: stretch; 
     gap: 20px;
     padding: 10px 0;
 }
 
 /* TARJETAS DE MÓDULO */
 .modulo {
-    flex: 1 1 320px;
+    flex: 1 1 380px;
     max-width: 480px;
+    min-height: 420px; /* Altura mínima fija para que todas midan similar de entrada */
     background-color: var(--azul-oscuro);
     color: white;
     border: 2px solid var(--azul-vibrante);
@@ -146,9 +147,14 @@ h1 {
     padding: 22px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: space-between; /* Empuja el botón y contenido de forma uniforme */
     box-shadow: 0 6px 16px rgba(15, 23, 42, 0.12);
-    transition: all 0.3s ease;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modulo:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 25px -6px rgba(7, 43, 142, 0.25);
 }
 
 .modulo-bloqueado {
@@ -172,6 +178,14 @@ h1 {
     color: #94A3B8;
     margin-top: 4px;
     font-weight: 600;
+}
+
+/* Espacio uniforme a la derecha de los iconos en los botones y encabezados */
+.insignia-bloqueo i,
+.boton-desplegar i {
+    margin-right: 8px; /* Espacio visual limpio entre el icono y el texto */
+    font-size: 0.9rem;  /* Tamaño proporcional y elegante */
+    vertical-align: middle;
 }
 
 .modulo article {
@@ -226,13 +240,17 @@ h1 {
 
 .boton-desplegar {
     width: 100%;
-    padding: 10px;
+    padding: 12px 15px; /* Botón más estilizado y fácil de presionar */
     background-color: var(--azul-cian);
     color: white;
     border: none;
     border-radius: 10px;
     font-weight: bold;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px; /* Asegura separación fluida si hay más de un elemento */
     transition: background-color 0.2s ease;
 }
 
@@ -242,26 +260,40 @@ h1 {
 
 .lista-actividades-desplegable {
     margin-top: 10px;
-    background-color: rgba(15, 23, 42, 0.5);
+    background-color: rgba(15, 23, 42, 0.6);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
     padding: 10px;
     display: flex;
     flex-direction: column;
     gap: 8px;
+    /* Si las actividades son muchas, se despliegan con scroll interno elegante */
+    max-height: 220px;
+    overflow-y: auto;  
+    /* Animación de aparición */
+    animation: fadeInSlide 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Estilo estético para la barra de desplazamiento interna */
+.lista-actividades-desplegable::-webkit-scrollbar {
+    width: 6px;
+}
+.lista-actividades-desplegable::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
 }
 
 .item-actividad {
     display: flex;
     align-items: flex-start;
-    gap: 10px;
+    gap: 12px; /* Espacio cómodo entre el checkbox y el texto de la actividad */
     background-color: rgba(255, 255, 255, 0.08);
-    padding: 10px 12px;
+    padding: 12px 14px; /* Mayor área de toque para los estudiantes */
     border-radius: 8px;
     cursor: pointer;
-    font-size: 0.85rem;
+    font-size: 0.88rem;
     transition: background-color 0.2s ease;
-}
+}   
 
 .item-actividad:hover {
     background-color: rgba(255, 255, 255, 0.18);
@@ -292,4 +324,66 @@ footer {
 footer p {
     margin-bottom: 4px;
     font-size: 0.95rem;
+}
+
+/* EFECTOS DE ELEVACIÓN Y TRANSICIONES NOTION (Suaves y orgánicas) */
+.modulo {
+    flex: 1 1 320px;
+    max-width: 480px;
+    background-color: var(--azul-oscuro);
+    color: white;
+    border: 2px solid var(--azul-vibrante);
+    border-radius: 24px;
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.12);
+    /* Transición fluida estilo Notion para hover y cambios de estado */
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
+}
+
+.modulo:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px -8px rgba(7, 43, 142, 0.25);
+}
+
+.superior {
+    margin: 0 0 25px 0;
+    padding: 25px;
+    border: 2px solid var(--azul-cian);
+    border-radius: 16px;
+    background-color: var(--tarjeta-blanca);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.superior:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+}
+
+/* Transición para el despliegue de actividades */
+.lista-actividades-desplegable {
+    margin-top: 10px;
+    background-color: rgba(15, 23, 42, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    /* Animación de aparición suave */
+    animation: fadeInSlide 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeInSlide {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
