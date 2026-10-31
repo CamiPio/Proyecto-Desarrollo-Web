@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function ActividadItem({ 
   numeroModulo, 
@@ -8,10 +9,7 @@ export default function ActividadItem({
   estaDesbloqueado, 
   alCompletarModulo 
 }) {
-  // Estado para desplegar/ocultar el menú de actividades
   const [mostrarActividades, setMostrarActividades] = useState(false);
-  
-  // Estado para rastrear el estado de cada una de las 4 actividades (true/false)
   const [estadoActividades, setEstadoActividades] = useState({});
 
   const alternarActividad = (indice) => {
@@ -24,7 +22,6 @@ export default function ActividadItem({
     
     setEstadoActividades(nuevoEstado);
 
-    // Verificar si las 4 actividades han sido completadas
     const totalCompletadas = Object.values(nuevoEstado).filter(Boolean).length;
     if (totalCompletadas === actividades.length) {
       alCompletarModulo(numeroModulo);
@@ -35,7 +32,13 @@ export default function ActividadItem({
   const esModuloCompleto = actividades.length > 0 && totalCompletadas === actividades.length;
 
   return (
-    <section className={`modulo ${!estaDesbloqueado ? 'modulo-bloqueado' : ''} ${esModuloCompleto ? 'modulo-completado' : ''}`}>
+    <motion.section 
+      className={`modulo ${!estaDesbloqueado ? 'modulo-bloqueado' : ''} ${esModuloCompleto ? 'modulo-completado' : ''}`}
+      initial={{ opacity: 0, scale: 0.97 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+      whileHover={{ y: -4, transition: { duration: 0.2 } }}
+    >
       <div className="num-modulo">
         <div className="num">
           <p>módulo</p>
@@ -44,7 +47,13 @@ export default function ActividadItem({
         <div className="bloque-titulo-modulo">
           <h2 className="name-modulo">{nombreModulo}</h2>
           <span className="insignia-bloqueo">
-            {!estaDesbloqueado ? '🔒 Bloqueado' : esModuloCompleto ? '✅ Módulo Completado' : '🔓 En Progreso'}
+            {!estaDesbloqueado ? (
+              <><i className="fa-solid fa-lock"></i> Bloqueado</>
+            ) : esModuloCompleto ? (
+              <><i className="fa-solid fa-circle-check"></i> Módulo Completado</>
+            ) : (
+              <><i className="fa-solid fa-lock-open"></i> En Progreso</>
+            )}
           </span>
         </div>
       </div>
@@ -53,39 +62,52 @@ export default function ActividadItem({
         {descripcionModulo}
       </article>
 
-      {/* Botón para desplegar/ocultar las 4 actividades */}
       {estaDesbloqueado && (
         <div className="contenedor-despliegue">
-          <button 
+          <motion.button 
             className="boton-desplegar" 
             onClick={() => setMostrarActividades(!mostrarActividades)}
+            whileTap={{ scale: 0.98 }}
           >
-            {mostrarActividades ? '▲ Ocultar Actividades' : `▼ Ver Actividades (${totalCompletadas}/${actividades.length})`}
-          </button>
+            {mostrarActividades ? (
+              <><i className="fa-solid fa-chevron-up"></i> Ocultar Actividades</>
+            ) : (
+              <><i className="fa-solid fa-chevron-down"></i> Ver Actividades ({totalCompletadas}/{actividades.length})</>
+            )}
+          </motion.button>
 
-          {/* Despliegue interactivo de las 4 actividades */}
-          {mostrarActividades && (
-            <div className="lista-actividades-desplegable">
-              {actividades.map((act, idx) => (
-                <div 
-                  key={idx} 
-                  className={`item-actividad ${estadoActividades[idx] ? 'actividad-hecha' : ''}`}
-                  onClick={() => alternarActividad(idx)}
-                >
-                  <input 
-                    type="checkbox" 
-                    checked={!!estadoActividades[idx]} 
-                    onChange={() => {}} 
-                  />
-                  <div className="texto-actividad">
-                    <strong>{act.nombre}:</strong> {act.descripcion}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+          <AnimatePresence>
+            {mostrarActividades && (
+              <motion.div 
+                className="lista-actividades-desplegable"
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+              >
+                {actividades.map((act, idx) => (
+                  <motion.div 
+                    key={idx} 
+                    className={`item-actividad ${estadoActividades[idx] ? 'actividad-hecha' : ''}`}
+                    onClick={() => alternarActividad(idx)}
+                    whileHover={{ scale: 1.01 }}
+                    whileTap={{ scale: 0.99 }}
+                  >
+                    <input 
+                      type="checkbox" 
+                      checked={!!estadoActividades[idx]} 
+                      onChange={() => {}} 
+                    />
+                    <div className="texto-actividad">
+                      <strong>{act.nombre}:</strong> {act.descripcion}
+                    </div>
+                  </motion.div>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       )}
-    </section>
+    </motion.section>
   );
 }
