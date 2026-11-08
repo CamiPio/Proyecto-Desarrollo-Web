@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import HeaderClase from './components/HeaderClase';
 import ObjetivosCard from './components/ObjetivosCard';
 import ActividadItem from './components/ActividadItem';
 import './style.css';
 
 export default function App() {
-  // Estado para controlar cuáles módulos están desbloqueados (Módulo 1 inicia desbloqueado)
+  const [modulos, setModulos] = useState([]);
+  const [cargando, setCargando] = useState(true);
+  const [errorRed, setErrorRed] = useState(null);
+
   const [modulosDesbloqueados, setModulosDesbloqueados] = useState({ "01": true });
 
   const desbloquearSiguienteModulo = (numeroActual) => {
@@ -15,6 +19,94 @@ export default function App() {
       [numeroSiguiente]: true
     }));
   };
+
+  // Actividades pedagógicas asociadas a cada número de módulo
+  const actividadesPorModulo = {
+    "01": [
+      { nombre: "Laboratorio de inspección en DevTools", descripcion: "Abrir F12 e inspeccionar la pestaña Network al cargar un sitio de noticias." },
+      { nombre: "Rastreando la ruta de una página web", descripcion: "Usar Ping.eu para visualizar el recorrido de paquetes desde Guatemala." },
+      { nombre: "Maquetación visual vs. Árbol DOM", descripcion: "Diagramar el Árbol DOM a partir de código HTML5 semántico." },
+      { nombre: "Infografía interactiva sobre motores", descripcion: "Crear un recurso en Canva/Genially comparando Blink, Gecko y WebKit." }
+    ],
+    "02": [
+      { nombre: "Auditoría de certificados SSL/TLS", descripcion: "Inspeccionar el candado de seguridad y fechas de expiración." },
+      { nombre: "Escape Room de Phishing", descripcion: "Analizar escenarios de correos y enlaces sospechosos." },
+      { nombre: "Simulación HTTP vs HTTPS", descripcion: "Demostración de captura de tráfico cifrado y plano." },
+      { nombre: "Manual de Netiqueta Digital", descripcion: "Redacción colaborativa de un código de ética escolar." }
+    ],
+    "03": [
+      { nombre: "Desarmando direcciones web", descripcion: "Separar URLs en protocolo, nombre principal y extensión." },
+      { nombre: "Cédula de una página con WHOIS", descripcion: "Investigar dueño y vencimiento de sitios oficiales." },
+      { nombre: "Diagrama Sitemap", descripcion: "Diseñar el árbol jerárquico para un portal educativo." },
+      { nombre: "Detección de Typosquatting", descripcion: "Analizar direcciones falsas con errores ortográficos." }
+    ],
+    "04": [
+      { nombre: "Cuadro comparativo de Hosting", descripcion: "Evaluar proveedores Compartido, VPS y Cloud." },
+      { nombre: "Servidor local con XAMPP", descripcion: "Configurar un entorno local ejecutando un archivo de prueba." },
+      { nombre: "Letras chiquitas de servicios gratuitos", descripcion: "Analizar limitaciones de visitas y anuncios." },
+      { nombre: "Subiendo archivos a la nube", descripcion: "Desplegar un sitio mediante GitHub Pages." }
+    ],
+    "05": [
+      { nombre: "Laboratorio de etiquetas <head>", descripcion: "Agregar etiquetas charset, viewport y autor en HTML5." },
+      { nombre: "Tarjeta Open Graph para redes", descripcion: "Configurar og:title e og:image para previsualizaciones." },
+      { nombre: "Eliminación de metadatos Exif", descripcion: "Inspeccionar y borrar GPS en fotografías digitales." },
+      { nombre: "Creación del archivo robots.txt", descripcion: "Redactar directivas de acceso para buscadores." }
+    ],
+    "06": [
+      { nombre: "Auditoría con Google Lighthouse", descripcion: "Medir rendimiento, accesibilidad y SEO en el navegador." },
+      { nombre: "Estructuración de encabezados", descripcion: "Corregir jerarquía de <h1> a <h6> en un artículo web." },
+      { nombre: "Redacción de Snippets SEO", descripcion: "Escribir títulos y descripciones optimizados." },
+      { nombre: "Optimización de imágenes y Alt Text", descripcion: "Comprimir imágenes y agregar texto alternativo." }
+    ],
+    "07": [
+      { nombre: "Generador Creative Commons", descripcion: "Seleccionar la licencia adecuada e integrar su distintivo." },
+      { nombre: "Atribución con regla TASL", descripcion: "Redactar créditos formales para recursos libres." },
+      { nombre: "Análisis de casos de Copyright", descripcion: "Estudiar consecuencias legales sobre uso no autorizado." },
+      { nombre: "Software Libre vs. Propietario", descripcion: "Comparar licencias MIT/GPL frente a comerciales." }
+    ],
+    "08": [
+      { nombre: "Pirámide Invertida Digital", descripcion: "Reestructurar un texto colocando la idea clave al inicio." },
+      { nombre: "Titulares de Alto Impacto", descripcion: "Crear titulares informativos evitando clickbait." },
+      { nombre: "Técnicas de Escaneabilidad", descripcion: "Maquetar con citas y subtítulos estratégicos." },
+      { nombre: "Crónica o Entrevista Multimedia", descripcion: "Escribir una pieza periodística enriquecida." }
+    ],
+    "09": [
+      { nombre: "Mesa de Fact-Checking", descripcion: "Verificación cruzada de fuentes antes de publicar." },
+      { nombre: "Lista de Chequeo Pre-Publicación", descripcion: "Pruebas de enlaces rotos y adaptabilidad móvil." },
+      { nombre: "Publicación del Proyecto Final", descripcion: "Desplegar el recurso web garantizando ética y accesibilidad." },
+      { nombre: "Auditoría de Pares (Peer Review)", descripcion: "Evaluación cruzada mediante rúbrica de calidad." }
+    ]
+  };
+
+  // Conexión estricta y directa a NocoDB
+  useEffect(() => {
+    const NOCODB_URL = 'https://app.nocodb.com/api/v3/data/pd1etebno0xc0bv/mrm3obinyl4g03g/records';
+    const API_TOKEN = 'nc_pat_ws3kQpiNLnGk62k07zbGq3PSRwZ3JWZGJvTpGbV0';
+
+    fetch(NOCODB_URL, {
+      method: 'GET',
+      headers: {
+        'xc-token': API_TOKEN,
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(res => {
+        if (!res.ok) throw new Error("Error en la respuesta de la red de NocoDB");
+        return res.json();
+      })
+      .then(datos => {
+        console.log("Respuesta cruda de NocoDB:", datos);
+        // Extraemos los registros soportando distintas variantes de NocoDB v3
+        const registros = datos.records || datos.list || datos.rows || [];
+        setModulos(registros);
+        setCargando(false);
+      })
+      .catch(error => {
+        console.error("Fallo al conectar con NocoDB:", error);
+        setErrorRed("No se pudo conectar con la base de datos de NocoDB.");
+        setCargando(false);
+      });
+  }, []);
 
   const informacionDocente = {
     nombre: "Delia Camila López Pío",
@@ -28,115 +120,17 @@ export default function App() {
     "Mitigación del déficit de atención, desinformación y vulnerabilidades como el phishing mediante la formación crítica en metadatos y análisis de autoridad en dominios."
   ];
 
-  const listaModulos = [
-    {
-      numero: "01",
-      nombre: "Funcionamiento Web y Motores de Renderizado",
-      descripcion: "Analizando la infraestructura de internet, el viaje de los paquetes de datos y cómo los motores de renderizado procesan los documentos web.",
-      actividades: [
-        { nombre: "Laboratorio de inspección en DevTools", descripcion: "Abrir F12 e inspeccionar la pestaña Network al cargar un sitio de noticias para identificar archivos y orden de renderizado." },
-        { nombre: "Rastreando la ruta de una página web", descripcion: "Usar Ping.eu para visualizar en un mapa el recorrido de los paquetes de datos desde Guatemala." },
-        { nombre: "Maquetación visual vs. Árbol DOM", descripcion: "Diagramar el Árbol DOM (Padres, Hijos, Nodos) a partir de un código HTML5 semántico." },
-        { nombre: "Infografía interactiva sobre motores", descripcion: "Crear un recurso en Canva/Genially comparando Blink, Gecko y WebKit." }
-      ]
-    },
-    {
-      numero: "02",
-      nombre: "Protocolos de Seguridad (HTTP/HTTPS) y Netiqueta",
-      descripcion: "Comprendiendo el cifrado de datos en la web, prevención de phishing y la aplicación de las reglas del código de ética digital.",
-      actividades: [
-        { nombre: "Auditoría de certificados SSL/TLS", descripcion: "Inspeccionar el candado de seguridad, Autoridad Certificadora y fechas de expiración en navegadores." },
-        { nombre: "Escape Room de Phishing", descripcion: "Analizar 4 escenarios de correos y enlaces sospechosos para evitar trampas de ingeniería social." },
-        { nombre: "Simulación HTTP vs HTTPS", descripcion: "Demostración de captura de tráfico comparando datos en texto plano vs. texto cifrado." },
-        { nombre: "Manual de Netiqueta Digital", descripcion: "Redacción colaborativa de un código de ética para publicaciones y foros escolares." }
-      ]
-    },
-    {
-      numero: "03",
-      nombre: "Arquitectura de Dominios y Jerarquía Web",
-      descripcion: "Identificando extensiones (.com, .gob, .org), jerarquías de dominio y el nivel de autoridad e integridad institucional.",
-      actividades: [
-        { nombre: "Desarmando direcciones web", descripcion: "Separar URLs en protocolo, nombre principal y extensión (.com, .gob, .edu, .gt)." },
-        { nombre: "Cédula de una página con WHOIS", descripcion: "Investigar dueño, año de creación y vencimiento de sitios oficiales vs. comerciales." },
-        { nombre: "Diagrama Sitemap", descripcion: "Diseñar el árbol jerárquico de carpetas y navegación para un portal educativo." },
-        { nombre: "Detección de Typosquatting", descripcion: "Analizar direcciones falsas con errores ortográficos y redactar consejos de prevención." }
-      ]
-    },
-    {
-      numero: "04",
-      nombre: "Servicios de Hosting y Evaluación de Proveedores",
-      descripcion: "Comparando plataformas de hosting gratuitas vs. de pago, analizando costos, restricciones, derechos sobre el contenido y riesgos.",
-      actividades: [
-        { nombre: "Cuadro comparativo de Hosting", descripcion: "Evaluar proveedores Compartido, VPS y Cloud según ancho de banda, espacio y costos." },
-        { nombre: "Servidor local con XAMPP", descripcion: "Configurar un entorno local ejecutando un archivo de prueba en http://localhost." },
-        { nombre: "Letras chiquitas de servicios gratuitos", descripcion: "Analizar limitaciones de visitas, anuncios y propiedad de contenido en plataformas gratuitas." },
-        { nombre: "Subiendo archivos a la nube", descripcion: "Desplegar un sitio o archivo mediante GitHub Pages o enlaces públicos." }
-      ]
-    },
-    {
-      numero: "05",
-      nombre: "Metadatos de Intermediación y Extensiones",
-      descripcion: "Configurando metadatos técnicos para proteger la autoría, indexar contenidos y definir la información técnica del sitio.",
-      actividades: [
-        { nombre: "Laboratorio de etiquetas <head>", descripcion: "Agregar etiquetas charset, viewport, autor, descripción y palabras clave en HTML5." },
-        { nombre: "Tarjeta Open Graph para redes", descripcion: "Configurar og:title, og:image y og:description para previsualizaciones en WhatsApp/Facebook." },
-        { nombre: "Eliminación de metadatos Exif", descripcion: "Inspeccionar y borrar GPS y datos ocultos en fotografías digitales antes de publicarlas." },
-        { nombre: "Creación del archivo robots.txt", descripcion: "Redactar directivas de acceso para motores de búsqueda." }
-      ]
-    },
-    {
-      numero: "06",
-      nombre: "SEO Técnico y Etiquetas de Posicionamiento",
-      descripcion: "Optimizando artículos mediante meta etiquetas para la interpretación de buscadores y redes.",
-      actividades: [
-        { nombre: "Auditoría con Google Lighthouse", descripcion: "Medir rendimiento, accesibilidad, buenas prácticas y SEO en el navegador." },
-        { nombre: "Estructuración de encabezados", descripcion: "Corregir jerarquía de <h1> a <h6> en un artículo web." },
-        { nombre: "Redacción de Snippets SEO", descripcion: "Escribir títulos (60 caracteres) y descripciones (155 caracteres) optimizados con palabras clave." },
-        { nombre: "Optimización de imágenes y Alt Text", descripcion: "Comprimir imágenes y agregar texto alternativo para lectores de pantalla." }
-      ]
-    },
-    {
-      numero: "07",
-      nombre: "Licencias de Datos, Software y Autoría",
-      descripcion: "Aplicando licencias Creative Commons, gestión de derechos de autor y atribución transparente en publicaciones digitales.",
-      actividades: [
-        { nombre: "Generador Creative Commons", descripcion: "Seleccionar la licencia adecuada (BY, NC, ND, SA) e integrar su distintivo en la web." },
-        { nombre: "Atribución con regla TASL", descripcion: "Redactar créditos formales para 5 recursos libres (Título, Autor, Fuente, Licencia)." },
-        { nombre: "Análisis de casos de Copyright", descripcion: "Estudiar consecuencias legales sobre uso no autorizado de música e imágenes." },
-        { nombre: "Software Libre vs. Propietario", descripcion: "Comparar licencias MIT/GPL frente a licencias comerciales restringidas." }
-      ]
-    },
-    {
-      numero: "08",
-      nombre: "Tipologías de Artículos y Técnicas de Redacción",
-      descripcion: "Redactando editoriales, crónicas, entrevistas y artículos de fondo diseñados para mantener la atención del lector digital.",
-      actividades: [
-        { nombre: "Pirámide Invertida Digital", descripcion: "Reestructurar un texto Placing la idea clave en el primer párrafo con viñetas y negritas." },
-        { nombre: "Titulares de Alto Impacto", descripcion: "Crear titulares informativos y de opinión evitando el clickbait engañoso." },
-        { nombre: "Técnicas de Escaneabilidad", descripcion: "Maquetar con citas <blockquote>, subtítulos y negritas estratégicas." },
-        { nombre: "Crónica o Entrevista Multimedia", descripcion: "Escribir una pieza periodística enriquecida con enlaces e imágenes." }
-      ]
-    },
-    {
-      numero: "09",
-      nombre: "Intención Comunicativa y Publicación Ética",
-      descripcion: "Definiendo el objetivo de la publicación, realizando pruebas de seguridad e integridad.",
-      actividades: [
-        { nombre: "Mesa de Fact-Checking", descripcion: "Verificación cruzada de fuentes y búsqueda inversa de imágenes antes de publicar." },
-        { nombre: "Lista de Chequeo Pre-Publicación", descripcion: "Pruebas de enlaces rotos, ortografía, adaptabilidad móvil y velocidad." },
-        { nombre: "Publicación del Proyecto Final", descripcion: "Desplegar el recurso web garantizando estándares de accesibilidad y ética." },
-        { nombre: "Auditoría de Pares (Peer Review)", descripcion: "Evaluación cruzada entre estudiantes mediante una rúbrica de calidad." }
-      ]
-    }
-  ];
-
   return (
-    <>
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.6 }}
+    >
       <nav className="barra-menu">
         <ul className="menu-enlaces">
-          <li className="enlace"><a href="#sobre-mi">Sobre mi</a></li>
+          <li className="enlace"><a href="#sobre-mi">Sobre mí</a></li>
           <li className="enlace"><a href="#competencia">Competencia</a></li>
-          <li className="enlace"><a href="#bitacora">Bitacora de Módulos</a></li>
+          <li className="enlace"><a href="#bitacora">Bitácora de Módulos</a></li>
         </ul>
       </nav>
 
@@ -158,26 +152,61 @@ export default function App() {
           puntosClave={competenciaCurso}
         />
 
-        <h1>Bitacora de modulos</h1>
+        <h1>Bitácora de Módulos</h1>
+
+        {/* Indicador de carga */}
+        {cargando && (
+          <p style={{ textAlign: 'center', padding: '30px', color: 'var(--azul-cian)', fontSize: '1.1rem', fontWeight: 'bold' }}>
+            <i className="fa-solid fa-spinner fa-spin"></i> Consultando registros en la base de datos de NocoDB...
+          </p>
+        )}
+
+        {/* Mensaje de error si falla la red */}
+        {errorRed && (
+          <p style={{ textAlign: 'center', padding: '30px', color: '#ef4444', fontWeight: 'bold' }}>
+            <i className="fa-solid fa-triangle-exclamation"></i> {errorRed}
+          </p>
+        )}
+
+        {/* Renderizado basado 100% en los registros de NocoDB */}
         <div className="contenedor-secundario" id="bitacora">
-          {listaModulos.map((mod) => (
-            <ActividadItem 
-              key={mod.numero}
-              numeroModulo={mod.numero}
-              nombreModulo={mod.nombre}
-              descripcionModulo={mod.descripcion}
-              actividades={mod.actividades}
-              estaDesbloqueado={!!modulosDesbloqueados[mod.numero]}
-              alCompletarModulo={desbloquearSiguienteModulo}
-            />
-          ))}
+          {!cargando && !errorRed && modulos.length === 0 && (
+            <p style={{ textAlign: 'center', padding: '20px', color: '#cbd5e1' }}>
+              La tabla en NocoDB está conectada pero no devolvió ningún registro. Verifique que tenga filas ingresadas.
+            </p>
+          )}
+
+          {!cargando && modulos.map((item, index) => {
+            // Extracción robusta de campos desde NocoDB (.fields)
+            const campos = item.fields || item;
+            
+            const numeroCrudo = campos.numero !== undefined ? campos.numero : (index + 1);
+            const numMod = String(numeroCrudo).padStart(2, '0');
+            
+            const nomMod = campos.nombre ;
+            const descMod = campos.descripcion;
+            
+            const actividadesAsociadas = actividadesPorModulo[numMod] || [];
+
+            return (
+              <ActividadItem 
+                key={item.Id || item.id || index}
+                numeroModulo={numMod}
+                nombreModulo={nomMod}
+                descripcionModulo={descMod}
+                actividades={actividadesAsociadas}
+                estaDesbloqueado={!!modulosDesbloqueados[numMod]}
+                alCompletarModulo={desbloquearSiguienteModulo}
+              />
+            );
+          })}
         </div>
       </main>
 
       <footer>
-        <p>Bitacora de clases - Redacción Digital - Proyecto Semana 2</p>
+        <p>Bitácora de clases - Redacción Digital - Proyecto Desarrollo Web Semana 7</p>
         <p>Delia Camila López Pío - 2143225</p>
       </footer>
-    </>
+    </motion.div>
   );
 }
