@@ -8,7 +8,7 @@ import './style.css';
 export default function App() {
   const [modulos, setModulos] = useState([]);
   const [cargando, setCargando] = useState(true);
-  const [errorRed, setErrorRed] = useState(null);
+  const [errorServidor, setErrorServidor] = useState(null);
 
   const [modulosDesbloqueados, setModulosDesbloqueados] = useState({ "01": true });
 
@@ -78,34 +78,42 @@ export default function App() {
     ]
   };
 
-  // Conexión estricta y directa a NocoDB
+  // Async/Await y Try/Catch
   useEffect(() => {
-    const NOCODB_URL = 'https://app.nocodb.com/api/v3/data/pd1etebno0xc0bv/mrm3obinyl4g03g/records';
-    const API_TOKEN = 'nc_pat_ws3kQpiNLnGk62k07zbGq3PSRwZ3JWZGJvTpGbV0';
+    async function obtenerDatosSeguros() {
+    // Lectura del archivo .env donde estan las llaves de acceso a la base de datos en la nube
+    const NOCODB_URL = import.meta.env.VITE_NOCODB_URL;
+    const API_TOKEN = import.meta.env.VITE_API_TOKEN;
 
-    fetch(NOCODB_URL, {
-      method: 'GET',
-      headers: {
-        'xc-token': API_TOKEN,
-        'Content-Type': 'application/json'
-      }
-    })
-      .then(res => {
-        if (!res.ok) throw new Error("Error en la respuesta de la red de NocoDB");
-        return res.json();
-      })
-      .then(datos => {
-        console.log("Respuesta cruda de NocoDB:", datos);
-        // Extraemos los registros soportando distintas variantes de NocoDB v3
+      try {
+        const respuesta = await fetch(NOCODB_URL, {
+          method: 'GET',
+          headers: {
+            'xc-token': API_TOKEN,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        // Validación de estado HTTP del servidor
+        if (!respuesta.ok) {
+          throw new Error(`Error en el servidor: Estado HTTP ${respuesta.status}`);
+        }
+
+        const datos = await respuesta.json();
         const registros = datos.records || datos.list || datos.rows || [];
         setModulos(registros);
+        setErrorServidor(null); // Limpiamos errores si la conexión es exitosa
+
+      } catch (error) {
+        console.error('Fallo detectado en la petición asincrónica:', error.message);
+        setErrorServidor('No se pudo establecer conexión con la base de datos en la nube. Verifique su red o su API Token.');
+      } finally {
+        // Apagamos el semáforo de carga haya éxito o error
         setCargando(false);
-      })
-      .catch(error => {
-        console.error("Fallo al conectar con NocoDB:", error);
-        setErrorRed("No se pudo conectar con la base de datos de NocoDB.");
-        setCargando(false);
-      });
+      }
+    }
+
+    obtenerDatosSeguros();
   }, []);
 
   const informacionDocente = {
@@ -154,30 +162,30 @@ export default function App() {
 
         <h1>Bitácora de Módulos</h1>
 
-        {/* Indicador de carga */}
+        {/* Semáforo de carga condicional */}
         {cargando && (
-          <p style={{ textAlign: 'center', padding: '30px', color: 'var(--azul-cian)', fontSize: '1.1rem', fontWeight: 'bold' }}>
-            <i className="fa-solid fa-spinner fa-spin"></i> Consultando registros en la base de datos de NocoDB...
+          <p style={{ textAlign: 'center', padding: '20px', color: 'var(--azul-cian)', fontWeight: 'bold' }}>
+            <i className="fa-solid fa-spinner fa-spin"></i> Sincronizando datos desde el servidor en la nube...
           </p>
         )}
 
-        {/* Mensaje de error si falla la red */}
-        {errorRed && (
-          <p style={{ textAlign: 'center', padding: '30px', color: '#ef4444', fontWeight: 'bold' }}>
-            <i className="fa-solid fa-triangle-exclamation"></i> {errorRed}
-          </p>
+        {/* Alerta visual amigable si el bloque catch atrapó un error */}
+        {errorServidor && (
+          <div style={{ padding: '15px', background: '#fee2e2', border: '1px solid #ef4444', borderRadius: '8px', color: '#b91c1c', margin: '20px 0' }}>
+            <p style={{ margin: 0, fontWeight: 'bold' }}>⚠️ Atención Docente / Estudiante:</p>
+            <p style={{ margin: '5px 0 0 0', fontSize: '0.9em' }}>{errorServidor}</p>
+          </div>
         )}
 
-        {/* Renderizado basado 100% en los registros de NocoDB */}
+        {/* Renderizado visual seguro */}
         <div className="contenedor-secundario" id="bitacora">
-          {!cargando && !errorRed && modulos.length === 0 && (
+          {!cargando && !errorServidor && modulos.length === 0 && (
             <p style={{ textAlign: 'center', padding: '20px', color: '#cbd5e1' }}>
-              La tabla en NocoDB está conectada pero no devolvió ningún registro. Verifique que tenga filas ingresadas.
+              No se encontraron registros activos en la tabla de NocoDB.
             </p>
           )}
 
-          {!cargando && modulos.map((item, index) => {
-            // Extracción robusta de campos desde NocoDB (.fields)
+          {!cargando && !errorServidor && modulos.map((item, index) => {
             const campos = item.fields || item;
             
             const numeroCrudo = campos.numero !== undefined ? campos.numero : (index + 1);
@@ -190,7 +198,7 @@ export default function App() {
 
             return (
               <ActividadItem 
-                key={item.Id || item.id || index}
+                key={item.id || index}
                 numeroModulo={numMod}
                 nombreModulo={nomMod}
                 descripcionModulo={descMod}
@@ -204,7 +212,7 @@ export default function App() {
       </main>
 
       <footer>
-        <p>Bitácora de clases - Redacción Digital - Proyecto Desarrollo Web Semana 7</p>
+        <p>Bitácora de clases - Redacción Digital - Proyecto Desarrollo Web Semana 8</p>
         <p>Delia Camila López Pío - 2143225</p>
       </footer>
     </motion.div>
